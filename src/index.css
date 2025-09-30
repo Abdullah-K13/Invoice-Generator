@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+
+/* Print styles for clean PDF export via browser print */
+@media print {
+  body { background: #fff; }
+  .no-print { display: none !important; }
+  .invoice-paper {
+    box-shadow: none !important;
+    border: none !important;
+  }
+}
