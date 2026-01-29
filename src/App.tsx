@@ -14,9 +14,9 @@ export default function App() {
         <Route path="/payment" element={<PaymentPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-      <footer className="no-print py-10 text-center text-sm text-slate-500">
+      {/* <footer className="no-print py-10 text-center text-sm text-slate-500">
         Built with ♥ — Secure Invoicing Pro
-      </footer>
+      </footer> */}
     </div>
   );
 }

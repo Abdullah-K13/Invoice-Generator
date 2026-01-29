@@ -66,20 +66,63 @@ export default function InvoicePaper({ data }: Props) {
             <span className="text-slate-600">Subtotal</span>
             <span className="font-medium">{fmtMoney(data.currency, total.subtotal)}</span>
           </div>
-          {typeof data.taxPercent === "number" && (
+
+          {/* One-time Charges */}
+          {total.oneTime.map((charge) => (
+            <div key={charge.id} className="flex justify-between text-sm">
+              <span className="text-slate-600">
+                {charge.name} {charge.type === "percent" ? `(${charge.value}%)` : ""}
+              </span>
+              <span className="font-medium">
+                {fmtMoney(
+                  data.currency,
+                  charge.type === "percent"
+                    ? (total.subtotal * charge.value) / 100
+                    : charge.value
+                )}
+              </span>
+            </div>
+          ))}
+
+          {/* Legacy Tax Support */}
+          {(!data.charges || data.charges.length === 0) && typeof data.taxPercent === "number" && (
             <div className="flex justify-between text-sm">
               <span className="text-slate-600">Tax ({data.taxPercent}%)</span>
-              <span className="font-medium">{fmtMoney(data.currency, total.tax)}</span>
+              <span className="font-medium">{fmtMoney(data.currency, total.taxLegacy)}</span>
             </div>
           )}
+
+          {/* Recurring Charges Group */}
+          {total.recurring.length > 0 && (
+            <div className="mt-3 pt-2 border-t border-dashed border-slate-200">
+              <p className="text-xs font-semibold text-slate-500 mb-1 uppercase tracking-wider">Recurring (Monthly)</p>
+              {total.recurring.map((charge) => (
+                <div key={charge.id} className="flex justify-between text-sm">
+                  <span className="text-slate-600">
+                    {charge.name} {charge.type === "percent" ? `(${charge.value}%)` : ""}
+                  </span>
+                  <span className="font-medium">
+                    {fmtMoney(
+                      data.currency,
+                      charge.type === "percent"
+                        ? (total.subtotal * charge.value) / 100
+                        : charge.value
+                    )}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+
           {typeof data.discount === "number" && data.discount > 0 && (
-            <div className="flex justify-between text-sm">
+            <div className="flex justify-between text-sm mt-2 pt-2 border-t border-slate-100">
               <span className="text-slate-600">Discount</span>
               <span className="font-medium">-{fmtMoney(data.currency, data.discount)}</span>
             </div>
           )}
+
           <div className="mt-2 pt-2 border-t border-slate-200 flex justify-between text-base">
-            <span className="font-semibold text-slate-900">Total</span>
+            <span className="font-semibold text-slate-900">Total Due</span>
             <span className="font-semibold">{fmtMoney(data.currency, total.total)}</span>
           </div>
           {data.notes && <p className="text-xs text-slate-500 mt-4">{data.notes}</p>}
@@ -91,10 +134,28 @@ export default function InvoicePaper({ data }: Props) {
 
 function calcTotal(data: InvoiceData) {
   const subtotal = data.items.reduce((s, it) => s + it.qty * it.unitPrice, 0);
-  const tax = typeof data.taxPercent === "number" ? (subtotal * data.taxPercent) / 100 : 0;
+
+  const charges = data.charges || [];
+  const getVal = (c: any) => (c.type === "percent" ? (subtotal * c.value) / 100 : c.value);
+
+  const oneTime = charges.filter((c) => !c.recurring);
+  const recurring = charges.filter((c) => c.recurring);
+
+  const oneTimeTotal = oneTime.reduce((s, c) => s + getVal(c), 0);
+  const recurringTotal = recurring.reduce((s, c) => s + getVal(c), 0);
+
+  // Fallback for legacy tax data
+  const taxLegacy =
+    (!data.charges || data.charges.length === 0) && typeof data.taxPercent === "number"
+      ? (subtotal * data.taxPercent) / 100
+      : 0;
+
   const discount = data.discount || 0;
-  const total = Math.max(0, subtotal + tax - discount);
-  return { subtotal, tax, total };
+
+  // Total includes current due (one-time + first month recurring + tax - discount)
+  const total = Math.max(0, subtotal + oneTimeTotal + recurringTotal + taxLegacy - discount);
+
+  return { subtotal, oneTime, recurring, taxLegacy, total };
 }
 
 function fmtMoney(currency: string, value: number) {

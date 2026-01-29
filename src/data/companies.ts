@@ -19,9 +19,9 @@ export const COMPANIES: CompanyProfile[] = [
   {
     id: "webnative",
     name: "WebNative",
-    email: "hello@webnative.dev",
-    phone: "+1 (555) 201-1122",
-    address: "1400 Market St, Suite 500, San Francisco, CA",
+    email: "info@webnativelabs.com",
+    phone: "+1 (863) 275-6381",
+    address: "",
     logoDataUrl: webnativeLogo, // ✅ uses logo2-webnative.jpg
     accent: "#0ea5e9", // sky-500
   },
@@ -29,8 +29,8 @@ export const COMPANIES: CompanyProfile[] = [
     id: "jetjams",
     name: "JetJams Technologies",
     email: "contact@jetjams.io",
-    phone: "+1 (555) 441-7788",
-    address: "88 King Street, Floor 6, New York, NY",
+    phone: "+1 6782630239",
+    address: "Palm Harbor, FL",
     logoDataUrl: jetjamsLogo, // ✅ uses logo1.svg
     accent: "#10b981", // emerald-500
   },

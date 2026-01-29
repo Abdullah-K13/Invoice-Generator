@@ -12,6 +12,14 @@ export type InvoiceItem = {
   unitPrice: number;
 };
 
+export type AdditionalCharge = {
+  id: string;
+  name: string;
+  type: "percent" | "flat";
+  value: number;
+  recurring?: boolean;
+};
+
 export type InvoiceData = {
   invoiceNo: string;
   issueDate: string;
@@ -27,7 +35,8 @@ export type InvoiceData = {
   projectDetails?: string;
   currency: string;
   items: InvoiceItem[];
-  taxPercent?: number;
+  charges?: AdditionalCharge[];
+  taxPercent?: number; // @deprecated use charges
   discount?: number;
   notes?: string;
   logoDataUrl?: string;
