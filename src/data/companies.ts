@@ -10,8 +10,9 @@ export type CompanyProfile = {
   email: string;
   phone: string;
   address: string;
-  logoDataUrl: string; // image import or data URL
-  accent: string; // brand color
+  logoDataUrl: string;
+  accent: string;
+  paypalClientId?: string;
 };
 
 // Use your real logos
@@ -22,8 +23,9 @@ export const COMPANIES: CompanyProfile[] = [
     email: "info@webnativelabs.com",
     phone: "+1 (863) 275-6381",
     address: "",
-    logoDataUrl: webnativeLogo, // ✅ uses logo2-webnative.jpg
-    accent: "#0ea5e9", // sky-500
+    logoDataUrl: webnativeLogo,
+    accent: "#0ea5e9",
+    paypalClientId: "AT_xHgKda-Hn6CRavrfAEU4auQEpEfVwbIrtYdiLT81BEoMFx11DUR58lbknYFKcLOUOhz1jh9APsMml",
   },
   {
     id: "jetjams",

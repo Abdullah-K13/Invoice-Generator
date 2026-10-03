@@ -42,6 +42,7 @@ export type InvoiceData = {
   logoDataUrl?: string;
   amount: string;
   status?: "UNPAID" | "PAID";
+  paypalClientId?: string;
 };
 
 export type Settings = {

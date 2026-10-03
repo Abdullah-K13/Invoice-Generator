@@ -1,3 +1,4 @@
+import LZString from "lz-string";
 import type { InvoiceData, Settings } from "../types";
 
 const SETTINGS_KEY = "sip:settings";
@@ -33,22 +34,23 @@ export function getInvoice(invoiceNo: string): InvoiceData | null {
 }
 
 export function makeShareLink(inv: InvoiceData, baseUrl?: string): string {
+  const settings = loadSettings();
+  // PayPal client ID is now stored in COMPANIES — no need to include in URL
   const payload = {
-    clientName: inv.clientName,
-    businessName: inv.businessName,
-    email: inv.email,
-    phone: inv.phone || "",
-    service: inv.service,
-    projectDetails: inv.projectDetails || "",
-    amount: inv.amount,
-    currency: inv.currency,
-    invoice: inv.invoiceNo,
-    logo: inv.logoDataUrl || "",
+    cn: inv.clientName,
+    bn: inv.businessName,
+    e: inv.email,
+    p: inv.phone || "",
+    s: inv.service,
+    pd: inv.projectDetails || "",
+    a: inv.amount,
+    c: inv.currency,
+    i: inv.invoiceNo,
   };
   const json = JSON.stringify(payload);
-  const encoded = btoa(unescape(encodeURIComponent(json)));
+  // Prefix "z" flags lz-string compression so the decoder knows which path to take
+  const encoded = "z" + LZString.compressToEncodedURIComponent(json);
   const url = new URL(baseUrl || window.location.origin);
-  url.pathname = "/payment";
-  url.searchParams.set("data", encoded);
+  url.pathname = "/p/" + encoded;
   return url.toString();
 }

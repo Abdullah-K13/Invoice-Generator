@@ -421,7 +421,7 @@ export default function BuilderPage() {
           <Card className="p-4 flex items-center justify-between">
             <span className="text-sm text-slate-600">Total</span>
             <span className="text-xl font-semibold text-slate-900">
-              {new Intl.NumberFormat(undefined, { style: "currency", currency: invoice.currency }).format(totals.total)}
+              {new Intl.NumberFormat(undefined, { style: "currency", currency: invoice.currency, currencyDisplay: "narrowSymbol" }).format(totals.total)}
             </span>
           </Card>
         </div>

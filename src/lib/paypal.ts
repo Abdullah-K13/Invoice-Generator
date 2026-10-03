@@ -2,11 +2,12 @@ import { loadSettings } from "./storage";
 
 let scriptLoading: Promise<void> | null = null;
 
-export function loadPayPalSdk(currency: string = "USD", extra = ""): Promise<void> {
+export function loadPayPalSdk(currency: string = "USD", extra = "", overrideClientId?: string): Promise<void> {
   if (scriptLoading) return scriptLoading;
   const { paypalClientId } = loadSettings();
+  const clientId = overrideClientId || paypalClientId;
   return (scriptLoading = new Promise((resolve, reject) => {
-    if (!paypalClientId) {
+    if (!clientId) {
       resolve();
       return;
     }
@@ -16,7 +17,7 @@ export function loadPayPalSdk(currency: string = "USD", extra = ""): Promise<voi
       return;
     }
     const s = document.createElement("script");
-    s.src = `https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(paypalClientId)}&currency=${currency}&components=buttons,messages&enable-funding=paylater,card${extra}`;
+    s.src = `https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(clientId)}&currency=${currency}&components=buttons,messages&enable-funding=paylater,card${extra}`;
     s.async = true;
     s.setAttribute("data-sip-paypal", "1");
     s.onload = () => resolve();

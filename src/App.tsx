@@ -12,6 +12,7 @@ export default function App() {
         <Route path="/" element={<BuilderPage />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/payment" element={<PaymentPage />} />
+        <Route path="/p/:data" element={<PaymentPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       {/* <footer className="no-print py-10 text-center text-sm text-slate-500">
